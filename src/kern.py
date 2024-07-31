@@ -1,6 +1,8 @@
 import random
 import json
+from functools import cache
 from typing import *
+
 
 PHIGROS_DATA_FILE = open("./data/song_name/phigros_data.txt", mode="r", encoding="utf-8")
 PHIGROS_SONG_DATA = PHIGROS_DATA_FILE.readlines()
@@ -8,8 +10,13 @@ PHIGROS_SONG_DATA = [song[:-1] for song in PHIGROS_SONG_DATA]
 PHIGROS_DATA_FILE.close()
 
 
+@cache
+def get_song_data():
+    return PHIGROS_SONG_DATA
+
+
 class AutoLetter:
-    def __init__(self):
+    def __init__(self, sz: int = None):
         self.letter_list = []
         self.guessed_letter = []
         self.guessed_song = []
@@ -33,8 +40,6 @@ class AutoLetter:
     def generate_quote_string(self):
         string_builder = ""
         string_builder += f"Guessed Letter: " + ",".join(self.guessed_letter) + "\n"
-        string_builder += "Words: \n"
-        string_builder += "\n"
         for idx, song in enumerate(self.letter_list):
             r_idx = idx+1
             string_builder += f"{r_idx}. "
@@ -56,7 +61,6 @@ class AutoLetter:
     def generate_scoreboard_admin_string(self):
         string_builder = ""
         string_builder += f"Guessed Letter: " + ",".join(self.guessed_letter) + "\n"
-        string_builder += "Words: \n"
         for idx, song in enumerate(self.letter_list):
             r_idx = idx+1
             string_builder += f"{r_idx}. "
@@ -71,5 +75,5 @@ class AutoLetter:
             self.guessed_letter.append(ch.lower())
 
     def open_song(self, idx: int):
-        self.guessed_song.append(self.letter_list[idx])
+        self.guessed_song.append(self.letter_list[idx-1])
 
